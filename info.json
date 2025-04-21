@@ -1,0 +1,92 @@
+{
+  "prueba": [
+    {
+      "id": "p1",
+      "pregunta": "¿Cuál es la fórmula química del ácido sulfúrico?",
+      "opciones": [
+        { "id": "o1", "texto": "H2SO4" },
+        { "id": "o2", "texto": "H2SO3" },
+        { "id": "o3", "texto": "HCl" },
+        { "id": "o4", "texto": "HNO3" }
+      ],
+      "respuestaCorrecta": "o1"
+    },
+    {
+      "id": "p2",
+      "pregunta": "¿Qué gas se produce al reaccionar ácido clorhídrico con carbonato de sodio?",
+      "opciones": [
+        { "id": "o1", "texto": "Dióxido de carbono" },
+        { "id": "o2", "texto": "Oxígeno" },
+        { "id": "o3", "texto": "Hidrógeno" },
+        { "id": "o4", "texto": "Nitrógeno" }
+      ],
+      "respuestaCorrecta": "o1"
+    },
+    {
+      "id": "p3",
+      "pregunta": "¿Cuál es el nombre del compuesto NaCl?",
+      "opciones": [
+        { "id": "o1", "texto": "Cloruro de sodio" },
+        { "id": "o2", "texto": "Sulfato de sodio" },
+        { "id": "o3", "texto": "Carbonato de sodio" },
+        { "id": "o4", "texto": "Nitrato de sodio" }
+      ],
+      "respuestaCorrecta": "o1"
+    },
+    {
+      "id": "p4",
+      "pregunta": "¿Qué tipo de enlace se forma entre los átomos de sodio y cloro en el cloruro de sodio?",
+      "opciones": [
+        { "id": "o1", "texto": "Enlace iónico" },
+        { "id": "o2", "texto": "Enlace covalente" },
+        { "id": "o3", "texto": "Enlace metálico" },
+        { "id": "o4", "texto": "Enlace coordinado" }
+      ],
+      "respuestaCorrecta": "o1"
+    },
+    {
+      "id": "p5",
+      "pregunta": "¿Cuál es el pH de una solución neutra a 25 °C?",
+      "opciones": [
+        { "id": "o1", "texto": "7" },
+        { "id": "o2", "texto": "0" },
+        { "id": "o3", "texto": "14" },
+        { "id": "o4", "texto": "1" }
+      ],
+      "respuestaCorrecta": "o1"
+    },
+    {
+      "id": "p6",
+      "pregunta": "¿Qué elemento es un gas noble?",
+      "opciones": [
+        { "id": "o1", "texto": "Helio" },
+        { "id": "o2", "texto": "Oxígeno" },
+        { "id": "o3", "texto": "Nitrógeno" },
+        { "id": "o4", "texto": "Hidrógeno" }
+      ],
+      "respuestaCorrecta": "o1"
+    },
+    {
+      "id": "p7",
+      "pregunta": "¿Cuál es la principal característica de los metales alcalinos?",
+      "opciones": [
+        { "id": "o1", "texto": "Son altamente reactivos" },
+        { "id": "o2", "texto": "Son buenos conductores de electricidad" },
+        { "id": "o3", "texto": "Tienen altos puntos de fusión" },
+        { "id": "o4", "texto": "Son sólidos a temperatura ambiente" }
+      ],
+      "respuestaCorrecta": "o1"
+    },
+    {
+      "id": "p8",
+      "pregunta": "¿Qué ion se forma cuando el sodio pierde un electrón?",
+      "opciones": [
+        { "id": "o1", "texto": "Na+" },
+        { "id": "o2", "texto": "Na-" },
+        { "id": "o3", "texto": "Na2+" },
+        { "id": "o4", "texto": "Na3+" }
+      ],
+      "respuestaCorrecta": "o1"
+    }
+  ]
+}
