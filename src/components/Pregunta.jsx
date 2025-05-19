@@ -1,5 +1,4 @@
-const Pregunta = ({ pregunta, opciones, onSelect, selectedOptionId }) => {
-  
+const Pregunta = ({ question, options, onSelect, selectedOptionId }) => {
   const handleSelectOption = (id) => {
     onSelect(id);
   };
@@ -7,10 +6,10 @@ const Pregunta = ({ pregunta, opciones, onSelect, selectedOptionId }) => {
   return (
     <div className="flex w-full flex-col items-center gap-6">
       <div className="w-full rounded-xl bg-indigo-900/30 p-6 shadow-lg backdrop-blur-sm">
-        <p className="text-center text-lg text-indigo-100">{pregunta}</p>
+        <p className="text-center text-lg text-indigo-100">{question}</p>
       </div>
       <div className="grid w-full grid-cols-2 gap-4">
-        {opciones.map((opc, idx) => (
+        {options.map((opc, idx) => (
           <button
             key={opc.id || idx}
             type="button"
@@ -21,7 +20,7 @@ const Pregunta = ({ pregunta, opciones, onSelect, selectedOptionId }) => {
             }`}
             onClick={() => handleSelectOption(opc.id)}
           >
-            <span className="relative z-10">{opc.texto || opc}</span>
+            <span className="relative z-10">{opc.text || opc}</span>
             {selectedOptionId === opc.id && (
               <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10" />
             )}
@@ -30,7 +29,6 @@ const Pregunta = ({ pregunta, opciones, onSelect, selectedOptionId }) => {
       </div>
     </div>
   );
-  
 };
 
 export default Pregunta;

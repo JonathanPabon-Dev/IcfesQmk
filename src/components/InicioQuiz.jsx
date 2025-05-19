@@ -1,14 +1,64 @@
-import React, { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { getQuizzes, getStudentById } from "../client/api";
 
 const InicioQuiz = ({ onStartQuiz }) => {
-  const [nombre, setNombre] = useState("");
+  const [quizId, setQuizId] = useState("");
+  const [studentId, setStudentId] = useState(null);
+  const [studentName, setStudentName] = useState("");
+  const [gradeLevel, setGradeLevel] = useState(null);
+  const [quizzesList, setQuizzesList] = useState([]);
+  const [showStudentMsg, setShowStudentMsg] = useState(false);
+  const [showQuizzesMsg, setShowQuizzesMsg] = useState(false);
+  const studentIdRef = useRef(null);
+
+  const ObtenerInfoEstudiante = async () => {
+    const student = await getStudentById(studentId);
+    if (student.length > 0) {
+      setStudentName(student[0].name);
+      setGradeLevel(student[0].grade_level);
+    } else {
+      setShowStudentMsg(true);
+    }
+  };
+
+  const ObtenerQuices = async () => {
+    const quizzes = await getQuizzes(gradeLevel);
+    if (quizzes.length > 0) {
+      setQuizzesList(quizzes);
+    } else {
+      setShowQuizzesMsg(true);
+    }
+  };
+
+  const handleBlur = () => {
+    setShowStudentMsg(false);
+    if (studentId !== null) {
+      ObtenerInfoEstudiante();
+    } else {
+      setStudentName("");
+      setGradeLevel(null);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (nombre.trim()) {
-      onStartQuiz(nombre);
-    }
+    onStartQuiz(quizId, studentId, studentName);
   };
+
+  useEffect(() => {
+    setShowQuizzesMsg(false);
+    if (gradeLevel !== null) {
+      ObtenerQuices(gradeLevel);
+    } else {
+      setQuizzesList([]);
+    }
+  }, [gradeLevel]);
+
+  useEffect(() => {
+    if (studentIdRef.current) {
+      studentIdRef.current.focus();
+    }
+  }, []);
 
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-8 rounded-xl bg-indigo-950/50 p-8 shadow-xl backdrop-blur-sm">
@@ -16,32 +66,86 @@ const InicioQuiz = ({ onStartQuiz }) => {
         <h1 className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-4xl font-bold text-transparent">
           Bienvenido
         </h1>
-        <p className="mt-2 text-indigo-200">Prepárate para poner a prueba tus conocimientos</p>
+        <p className="mt-2 text-indigo-200">
+          Prepárate para poner a prueba tus conocimientos
+        </p>
       </div>
-      
-      <form onSubmit={handleSubmit} className="flex w-full max-w-md flex-col items-center gap-6">
+
+      <form
+        onSubmit={handleSubmit}
+        className="flex w-full max-w-md flex-col items-center gap-6"
+      >
         <div className="w-full">
-          <label htmlFor="nombre" className="mb-2 block text-lg font-medium text-indigo-300">
-            ¿Cuál es tu nombre?
+          <label
+            htmlFor="studentId"
+            className="mb-2 block text-lg font-medium text-indigo-300"
+          >
+            Código estudiante
           </label>
           <input
-            type="text"
-            id="nombre"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            className="w-full rounded-lg border-2 border-indigo-500/30 bg-indigo-950/50 px-4 py-3 text-indigo-100 placeholder-indigo-400 shadow-inner transition-colors duration-200 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400"
-            placeholder="Escribe tu nombre aquí"
+            id="studentId"
+            ref={studentIdRef}
+            type="search"
+            inputMode="numeric"
+            pattern="\d*"
+            className="w-full rounded-lg border-2 border-indigo-500/30 bg-indigo-950/50 px-4 py-3 text-indigo-100 placeholder-indigo-400 shadow-inner transition-colors duration-200 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 focus:outline-none"
+            value={studentId || ""}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              if (/^\d*$/.test(newValue) && newValue.length <= 6) {
+                setStudentId(e.target.value);
+              }
+            }}
+            onBlur={handleBlur}
             required
           />
+          {showStudentMsg && (
+            <p className="mt-2 w-full text-red-500">El estudiante no existe</p>
+          )}
+          {studentName && (
+            <p className="mt-2 w-full rounded-lg border-2 border-indigo-500/30 bg-indigo-500/30 px-4 py-3 text-indigo-100 shadow-inner">
+              {studentName}
+            </p>
+          )}
         </div>
-        <button
-          type="submit"
-          className="group relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 px-8 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:cursor-pointer hover:from-indigo-600 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
-          disabled={!nombre.trim()}
-        >
-          <span className="relative z-10">Iniciar prueba</span>
-          <div className="absolute inset-0 -translate-x-full transform bg-gradient-to-r from-indigo-600 to-indigo-700 transition-transform duration-200 group-hover:translate-x-0"></div>
-        </button>
+        {showQuizzesMsg && (
+          <p className="mt-2 w-full text-red-500">No hay quices disponibles</p>
+        )}
+        {quizzesList.length > 0 && (
+          <>
+            <div className="w-full">
+              <label
+                htmlFor="quizId"
+                className="mb-2 block text-lg font-medium text-indigo-300"
+              >
+                Seleccione el quiz
+              </label>
+              <select
+                id="quizId"
+                className="w-full rounded-lg border-2 border-indigo-500/30 bg-indigo-950/50 px-4 py-3 text-indigo-100 placeholder-indigo-400 shadow-inner transition-colors duration-200 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 focus:outline-none"
+                value={quizId || ""}
+                onChange={(e) => setQuizId(e.target.value)}
+                required
+              >
+                <option value="" disabled>
+                  -- Seleccione --
+                </option>
+                {quizzesList.map((quiz) => (
+                  <option key={quiz.id} value={quiz.id}>
+                    {quiz.topic}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              type="submit"
+              className="group relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 px-8 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:cursor-pointer hover:from-indigo-600 hover:to-indigo-700"
+            >
+              <span className="relative z-10">Iniciar prueba</span>
+              <div className="absolute inset-0 -translate-x-full transform bg-gradient-to-r from-indigo-600 to-indigo-700 transition-transform duration-200 group-hover:translate-x-0"></div>
+            </button>
+          </>
+        )}
       </form>
     </div>
   );

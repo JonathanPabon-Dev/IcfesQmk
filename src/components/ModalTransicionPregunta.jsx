@@ -1,34 +1,31 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-const ModalTransicionPregunta = ({ visible, onFinish, esUltima }) => {
+const ModalTransicionPregunta = ({ onFinish, esUltima }) => {
   const [contador, setContador] = useState(3);
 
   useEffect(() => {
-    if (!visible || esUltima) return;
     setContador(3);
     const interval = setInterval(() => {
       setContador((prev) => {
         if (prev <= 1) {
           clearInterval(interval);
-          onFinish && onFinish();
+          onFinish();
           return 1;
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [visible, esUltima, onFinish]);
-
-  if (!visible) return null;
+  }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-      <div className="flex flex-col items-center justify-center bg-indigo-950/90 rounded-xl p-10 shadow-2xl min-w-[320px] min-h-[220px]">
-        <h2 className="text-3xl font-bold text-white mb-6 animate-pulse">
+    <div className="bg-opacity-70 fixed inset-0 z-50 flex items-center justify-center bg-black">
+      <div className="flex min-h-[220px] min-w-[320px] flex-col items-center justify-center rounded-xl bg-indigo-950/90 p-10 shadow-2xl">
+        <h2 className="mb-6 animate-pulse text-3xl font-bold text-white">
           {esUltima ? "Has terminado" : "Siguiente Pregunta"}
         </h2>
         {!esUltima && (
-          <div className="relative w-24 h-24 flex items-center justify-center">
+          <div className="relative flex h-24 w-24 items-center justify-center">
             <svg className="absolute top-0 left-0" width="96" height="96">
               <circle
                 cx="48"
@@ -51,7 +48,9 @@ const ModalTransicionPregunta = ({ visible, onFinish, esUltima }) => {
                 style={{ transition: "stroke-dashoffset 1s linear" }}
               />
             </svg>
-            <span className="text-5xl font-bold text-indigo-200 z-10">{contador}</span>
+            <span className="z-10 text-5xl font-bold text-indigo-200">
+              {contador}
+            </span>
           </div>
         )}
       </div>
