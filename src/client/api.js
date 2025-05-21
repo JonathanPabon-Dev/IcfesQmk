@@ -1,5 +1,17 @@
 import supabase from "../supabase/supabaseClient";
 
+export const getParameters = async (parameter) => {
+  const { data, error } = await supabase
+    .from("parameters")
+    .select()
+    .eq("name", parameter);
+  if (error) {
+    console.error("Error al obtener las preguntas.", error);
+    return null;
+  }
+  return data[0];
+};
+
 export const getQuestions = async (quizId) => {
   const { data, error } = await supabase
     .from("questions")
@@ -12,8 +24,15 @@ export const getQuestions = async (quizId) => {
   return data;
 };
 
-export const getAnswers = async () => {
-  const { data, error } = await supabase.from("answers").select();
+export const getAnswers = async (quizId = "", studentId = null) => {
+  let query = supabase.from("answers").select();
+  if (quizId !== "") {
+    query = query.eq("quiz_id", quizId);
+  }
+  if (studentId !== null) {
+    query = query.eq("student_id", studentId);
+  }
+  const { data, error } = await query;
   if (error) {
     console.error("Error al obtener las respuestas.", error);
     return null;

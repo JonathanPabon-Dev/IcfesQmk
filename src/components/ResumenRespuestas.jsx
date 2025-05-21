@@ -1,6 +1,20 @@
-const ResumenRespuestas = ({ answers, questions, onStart, onStatistics }) => {
+const ResumenRespuestas = ({
+  answers,
+  questions,
+  results,
+  onStart,
+  onStatistics,
+}) => {
   return (
-    <div className="w-full max-w-3xl">
+    <div className="flex w-full max-w-3xl flex-col gap-6">
+      <p className="text-center text-2xl font-bold text-indigo-300">
+        Puntuación:{" "}
+        <span
+          className={results.score >= 60 ? "text-green-200" : "text-red-200"}
+        >
+          {results.score}%
+        </span>
+      </p>
       <div className="rounded-lg bg-indigo-900/20 px-6">
         <div className="space-y-4">
           {answers.map((answer, index) => {
@@ -93,7 +107,9 @@ const ResumenRespuestas = ({ answers, questions, onStart, onStatistics }) => {
         </button>
         <button
           onClick={onStatistics}
-          className="group relative overflow-hidden rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 px-8 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:cursor-pointer hover:from-indigo-600 hover:to-indigo-700"
+          className="group relative overflow-hidden rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 px-8 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:cursor-pointer hover:from-indigo-600 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+          disabled
+          title="Próximamente"
         >
           Estadísticas
         </button>

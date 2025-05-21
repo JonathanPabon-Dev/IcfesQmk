@@ -5,41 +5,43 @@ import {
   getAnswers,
   getResults,
   postResults,
+  getParameters,
 } from "../client/api";
 import ResumenRespuestas from "../components/ResumenRespuestas";
 import EstadisticasQuiz from "../components/EstadisticasQuiz";
 import InicioQuiz from "../components/InicioQuiz";
 
 const Cuestionario = () => {
+  const [seconds, setSeconds] = useState(0);
   const [name, setName] = useState("");
   const [quizId, setQuizId] = useState("");
   const [studentId, setStudentId] = useState(null);
-  const [view, setView] = useState("inicio");
+  const [view, setView] = useState("start");
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState(null);
+
+  const ObtenerTiempoQuiz = async () => {
+    const quizTime = await getParameters("segundosIcfesQuiz");
+    setSeconds(quizTime.value);
+  };
 
   const ObtenerPreguntas = async () => {
-    const questions = await getQuestions(quizId);
-    setQuestions(questions);
+    const questionsTemp = await getQuestions(quizId);
+    setQuestions(questionsTemp);
   };
 
-  const ObtenerRespuestas = async () => {
-    const respuestas = await getAnswers();
-    setAnswers(respuestas);
-  };
-
-  const InsertarResultados = async () => {
+  const InsertarResultados = async (answersList) => {
     let correct = 0;
     let score = 0;
-    answers.forEach((answer) => {
-      if (answer.is_correct) {
+
+    answersList.forEach((item) => {
+      if (item.is_correct) {
         correct += 1;
       }
     });
-    score = ((correct / answers.length) * 100).toFixed(2);
-
-    postResults({
+    score = ((correct / answersList.length) * 100).toFixed(2);
+    await postResults({
       student_id: studentId,
       quiz_id: quizId,
       score: score,
@@ -47,8 +49,8 @@ const Cuestionario = () => {
   };
 
   const ObtenerResultadosIndividual = async () => {
-    const resultados = await getResults(quizId, studentId);
-    setResults(resultados[0]);
+    const resultsData = await getResults(quizId, studentId);
+    setResults(resultsData[0]);
   };
 
   const handleStartQuiz = async (
@@ -62,29 +64,30 @@ const Cuestionario = () => {
     setView("quiz");
   };
 
-  const handleVolverInicio = () => {
-    setView("inicio");
+  const handleStartView = () => {
+    setView("start");
   };
 
-  const handleFinishForm = () => {
-    ObtenerRespuestas();
-    InsertarResultados();
-    setView("resumen");
+  const handleFinishForm = async () => {
+    const answersData = await getAnswers(quizId, studentId);
+    setAnswers(answersData);
+    await InsertarResultados(answersData);
+    await ObtenerResultadosIndividual();
+    setView("summary");
   };
 
-  const handleVerEstadisticas = () => {
-    setView("estadisticas");
+  const handleStatisticsView = () => {
+    setView("statistics");
   };
 
   useEffect(() => {
-    if (view === "quiz") {
+    if (view == "quiz") {
+      ObtenerTiempoQuiz();
       ObtenerPreguntas();
-    } else if (view === "resumen") {
-      ObtenerResultadosIndividual();
     }
   }, [view]);
 
-  if (view === "inicio") {
+  if (view === "start") {
     return (
       <div className="m-auto max-w-4xl min-w-3xl rounded-xl bg-indigo-900 p-10">
         <InicioQuiz onStartQuiz={handleStartQuiz} />
@@ -92,28 +95,31 @@ const Cuestionario = () => {
     );
   }
 
-  if (view === "resumen") {
+  if (view === "summary") {
     return (
       <div className="m-auto max-w-4xl min-w-3xl rounded-xl bg-indigo-900 p-10">
         <div className="flex flex-col items-center gap-6">
           <div className="text-center">
             <h2 className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-3xl font-bold text-transparent">
-              ¡Felicitaciones, {name}!
+              ¡Felicitaciones, {name.split(" ")[0]}!
             </h2>
-            <p className="mt-2 text-indigo-200">Prueba finalizada</p>
+            <p className="mt-2 text-xl font-bold text-indigo-400">
+              Prueba finalizada
+            </p>
           </div>
           <ResumenRespuestas
             answers={answers}
             questions={questions}
-            onVolverInicio={handleVolverInicio}
-            onVerEstadisticas={handleVerEstadisticas}
+            results={results}
+            onStart={handleStartView}
+            onStatistics={handleStatisticsView}
           />
         </div>
       </div>
     );
   }
 
-  if (view === "estadisticas") {
+  if (view === "statistics") {
     return (
       <div className="m-auto max-w-4xl min-w-3xl rounded-xl bg-indigo-900 p-10">
         Estadísticas
@@ -127,15 +133,15 @@ const Cuestionario = () => {
 
   return (
     questions.length > 0 && (
-      <>
-        <div className="m-auto max-w-4xl min-w-3xl rounded-xl bg-indigo-900 p-10">
-          <FormularioPreguntas
-            studentId={studentId}
-            questions={questions}
-            onFinishForm={handleFinishForm}
-          />
-        </div>
-      </>
+      <div className="m-auto max-w-4xl min-w-3xl rounded-xl bg-indigo-900 p-10">
+        <FormularioPreguntas
+          studentId={studentId}
+          quizId={quizId}
+          questions={questions}
+          quizTime={seconds}
+          onFinishForm={handleFinishForm}
+        />
+      </div>
     )
   );
 };

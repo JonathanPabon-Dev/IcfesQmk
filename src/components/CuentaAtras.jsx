@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 
-const CuentaAtras = ({ minutes, seconds, onTimeFinish }) => {
-  const [timeLeft, setTimeLeft] = useState(minutes * 60 + seconds);
+const CuentaAtras = ({ seconds = 0, onTimeFinish }) => {
+  const [timeLeft, setTimeLeft] = useState(seconds);
 
   useEffect(() => {
-    setTimeLeft(minutes * 60 + seconds);
-  }, [minutes, seconds]);
+    setTimeLeft(seconds);
+  }, [seconds]);
 
   useEffect(() => {
     if (timeLeft === 0) {

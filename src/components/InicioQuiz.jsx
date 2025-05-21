@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { getQuizzes, getStudentById } from "../client/api";
+import { getQuizzes, getResults, getStudentById } from "../client/api";
 
 const InicioQuiz = ({ onStartQuiz }) => {
   const [quizId, setQuizId] = useState("");
@@ -10,6 +10,15 @@ const InicioQuiz = ({ onStartQuiz }) => {
   const [showStudentMsg, setShowStudentMsg] = useState(false);
   const [showQuizzesMsg, setShowQuizzesMsg] = useState(false);
   const studentIdRef = useRef(null);
+
+  const LimpiarTodo = () => {
+    setQuizId("");
+    setStudentName("");
+    setGradeLevel(null);
+    setQuizzesList([]);
+    setShowStudentMsg(false);
+    setShowQuizzesMsg(false);
+  };
 
   const ObtenerInfoEstudiante = async () => {
     const student = await getStudentById(studentId);
@@ -30,18 +39,39 @@ const InicioQuiz = ({ onStartQuiz }) => {
     }
   };
 
-  const handleBlur = () => {
-    setShowStudentMsg(false);
-    if (studentId !== null) {
-      ObtenerInfoEstudiante();
-    } else {
-      setStudentName("");
-      setGradeLevel(null);
+  const ObtenerIntentoQuiz = async () => {
+    const results = await getResults(quizId, studentId);
+    return results;
+  };
+
+  const ValidaEstadoQuiz = async () => {
+    const results = await ObtenerIntentoQuiz();
+    return results.length === 0;
+  };
+
+  const handleInputStudentId = (e) => {
+    const newValue = e.target.value;
+    if (/^\d*$/.test(newValue) && newValue.length <= 6) {
+      setStudentId(e.target.value);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleBlur = () => {
+    setShowStudentMsg(false);
+    LimpiarTodo();
+    if (studentId !== null && studentId !== "") {
+      ObtenerInfoEstudiante();
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const disponible = await ValidaEstadoQuiz();
+    if (!disponible) {
+      alert("El quiz ya ha sido realizado");
+      setQuizId("");
+      return;
+    }
     onStartQuiz(quizId, studentId, studentName);
   };
 
@@ -90,12 +120,7 @@ const InicioQuiz = ({ onStartQuiz }) => {
             pattern="\d*"
             className="w-full rounded-lg border-2 border-indigo-500/30 bg-indigo-950/50 px-4 py-3 text-indigo-100 placeholder-indigo-400 shadow-inner transition-colors duration-200 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 focus:outline-none"
             value={studentId || ""}
-            onChange={(e) => {
-              const newValue = e.target.value;
-              if (/^\d*$/.test(newValue) && newValue.length <= 6) {
-                setStudentId(e.target.value);
-              }
-            }}
+            onChange={handleInputStudentId}
             onBlur={handleBlur}
             required
           />

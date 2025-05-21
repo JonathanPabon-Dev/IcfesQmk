@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const ModalTransicionPregunta = ({ onFinish, esUltima }) => {
+const ModalTransicionPregunta = ({ onFinish, isLast }) => {
   const [contador, setContador] = useState(3);
 
   useEffect(() => {
@@ -22,9 +22,9 @@ const ModalTransicionPregunta = ({ onFinish, esUltima }) => {
     <div className="bg-opacity-70 fixed inset-0 z-50 flex items-center justify-center bg-black">
       <div className="flex min-h-[220px] min-w-[320px] flex-col items-center justify-center rounded-xl bg-indigo-950/90 p-10 shadow-2xl">
         <h2 className="mb-6 animate-pulse text-3xl font-bold text-white">
-          {esUltima ? "Has terminado" : "Siguiente Pregunta"}
+          {isLast ? "Has terminado" : "Siguiente Pregunta"}
         </h2>
-        {!esUltima && (
+        {!isLast && (
           <div className="relative flex h-24 w-24 items-center justify-center">
             <svg className="absolute top-0 left-0" width="96" height="96">
               <circle

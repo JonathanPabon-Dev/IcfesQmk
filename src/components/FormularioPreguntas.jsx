@@ -4,24 +4,29 @@ import Pregunta from "./Pregunta";
 import { postAnswer } from "../client/api";
 import ModalTransicionPregunta from "./ModalTransicionPregunta";
 
-const FormularioPreguntas = ({ studentId, questions, onFinishForm }) => {
+const FormularioPreguntas = ({
+  studentId,
+  quizId,
+  questions,
+  quizTime,
+  onFinishForm,
+}) => {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([]);
   const [selectedOptionId, setSelectedOptionId] = useState(null);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(10);
   const [key, setKey] = useState(0);
   const [showModalTransicion, setShowModalTransicion] = useState(false);
   const [isLastQuestion, setIsLastQuestion] = useState(false);
   const [respuestaGuardada, setRespuestaGuardada] = useState(false);
 
-  const handleSendResponse = () => {
+  const handleSendResponse = async () => {
     if (respuestaGuardada) return;
-    postAnswer({
+    await postAnswer({
       student_id: studentId,
+      quiz_id: quizId,
       question_id: currentQuestion.id,
       selected_option: selectedOptionId,
       is_correct: selectedOptionId === currentQuestion.correct_option,
@@ -29,8 +34,6 @@ const FormularioPreguntas = ({ studentId, questions, onFinishForm }) => {
     setRespuestaGuardada(true);
     if (currentQuestionIndex < totalQuestions - 1) {
       setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-      setMinutes(0);
-      setSeconds(10);
       setKey((prevKey) => prevKey + 1);
       setIsLastQuestion(false);
       setShowModalTransicion(true);
@@ -85,7 +88,7 @@ const FormularioPreguntas = ({ studentId, questions, onFinishForm }) => {
 
   return (
     <>
-      {!showModalTransicion ? (
+      {!showModalTransicion && !isLastQuestion ? (
         <div className="flex min-h-[60vh] flex-col gap-8 rounded-xl bg-indigo-950/50 p-8 shadow-xl backdrop-blur-sm">
           <div className="flex w-full items-center justify-between rounded-lg bg-indigo-900/20 px-6 py-4">
             <div className="flex items-center gap-3">
@@ -102,8 +105,7 @@ const FormularioPreguntas = ({ studentId, questions, onFinishForm }) => {
             </div>
             <CuentaAtras
               key={key}
-              minutes={minutes}
-              seconds={seconds}
+              seconds={quizTime}
               onTimeFinish={handleFinishTime}
             />
           </div>
@@ -129,7 +131,7 @@ const FormularioPreguntas = ({ studentId, questions, onFinishForm }) => {
       ) : (
         <ModalTransicionPregunta
           onFinish={handleFinTransicion}
-          esUltima={isLastQuestion}
+          isLast={isLastQuestion}
         />
       )}
     </>
