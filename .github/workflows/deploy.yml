@@ -26,7 +26,7 @@ concurrency:
 
 env:
   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-  VITE_SUPABASE_KEY: ${{ secrets.VITE_SUPABASE_KEY }}
+  VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
 jobs:
   # 💼 Single deploy job since we're just deploying
@@ -62,10 +62,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-      VITE_SUPABASE_KEY: ${{ secrets.VITE_SUPABASE_KEY }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
     steps:
       - name: Make a request to Supabase
         run: |
           curl -X GET "$VITE_SUPABASE_URL/rest/v1/quizzes" \
-          -H "Authorization: Bearer $VITE_SUPABASE_KEY" \
+          -H "Authorization: Bearer $VITE_SUPABASE_ANON_KEY" \
           -H "Content-Type: application/json"
