@@ -23,7 +23,9 @@ const InicioQuiz = ({ onStartQuiz }) => {
   const ObtenerInfoEstudiante = async () => {
     const student = await getStudentById(studentId);
     if (student.length > 0) {
-      setStudentName(student[0].name);
+      setStudentName(
+        `${student[0].first_name}${student[0].second_name ? " " + student[0].second_name : ""} ${student[0].first_lastname} ${student[0].second_lastname}`,
+      );
       setGradeLevel(student[0].grade_level);
     } else {
       setShowStudentMsg(true);
