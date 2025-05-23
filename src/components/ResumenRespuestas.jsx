@@ -1,10 +1,4 @@
-const ResumenRespuestas = ({
-  answers,
-  questions,
-  results,
-  onStart,
-  onStatistics,
-}) => {
+const ResumenRespuestas = ({ answers, questions, results }) => {
   return (
     <div className="flex w-full max-w-3xl flex-col gap-6">
       <p className="text-center text-2xl font-bold text-indigo-300">
@@ -95,24 +89,6 @@ const ResumenRespuestas = ({
             );
           })}
         </div>
-      </div>
-
-      <div className="mt-4 flex items-center justify-center gap-2">
-        <button
-          onClick={onStart}
-          className="group relative overflow-hidden rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 px-8 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:cursor-pointer hover:from-indigo-600 hover:to-indigo-700"
-        >
-          <span className="relative z-10">Inicio</span>
-          <div className="absolute inset-0 -translate-x-full transform bg-gradient-to-r from-indigo-600 to-indigo-700 transition-transform duration-200 group-hover:translate-x-0"></div>
-        </button>
-        <button
-          onClick={onStatistics}
-          className="group relative overflow-hidden rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 px-8 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:cursor-pointer hover:from-indigo-600 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
-          disabled
-          title="Próximamente"
-        >
-          Estadísticas
-        </button>
       </div>
     </div>
   );

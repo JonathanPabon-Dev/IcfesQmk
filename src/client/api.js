@@ -74,12 +74,14 @@ export const postResults = async (result) => {
 
 export const getQuizzes = async (grade_level) => {
   const date = new Date().toISOString().split("T")[0];
-  const { data, error } = await supabase
+  let query = supabase
     .from("quizzes")
     .select()
     .lte("available_since", date)
-    .gte("available_until", date)
     .eq("grade_level", grade_level);
+  query = query.or(`available_until.is.null,available_until.gte.${date}`);
+
+  const { data, error } = await query;
   if (error) {
     console.error("Error al obtener el listado de quices.", error);
     return null;

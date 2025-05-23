@@ -111,9 +111,24 @@ const Cuestionario = () => {
             answers={answers}
             questions={questions}
             results={results}
-            onStart={handleStartView}
-            onStatistics={handleStatisticsView}
           />
+          <div className="mt-4 flex items-center justify-center gap-2">
+            <button
+              onClick={handleStartView}
+              className="group relative overflow-hidden rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 px-8 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:cursor-pointer hover:from-indigo-600 hover:to-indigo-700"
+            >
+              <span className="relative z-10">Inicio</span>
+              <div className="absolute inset-0 -translate-x-full transform bg-gradient-to-r from-indigo-600 to-indigo-700 transition-transform duration-200 group-hover:translate-x-0"></div>
+            </button>
+            <button
+              onClick={handleStatisticsView}
+              className="group relative overflow-hidden rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 px-8 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:cursor-pointer hover:from-indigo-600 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+              disabled
+              title="Próximamente"
+            >
+              Estadísticas
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -132,8 +147,8 @@ const Cuestionario = () => {
   }
 
   return (
-    questions.length > 0 && (
-      <div className="m-auto max-w-4xl min-w-3xl rounded-xl bg-indigo-900 p-10">
+    <div className="m-auto max-w-4xl min-w-3xl rounded-xl bg-indigo-900 p-10">
+      {questions.length > 0 ? (
         <FormularioPreguntas
           studentId={studentId}
           quizId={quizId}
@@ -141,8 +156,21 @@ const Cuestionario = () => {
           quizTime={seconds}
           onFinishForm={handleFinishForm}
         />
-      </div>
-    )
+      ) : (
+        <>
+          <p className="text-center font-bold">No hay preguntas disponibles.</p>
+          <div className="mt-4 flex items-center justify-center gap-2">
+            <button
+              onClick={handleStartView}
+              className="group relative overflow-hidden rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 px-8 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:cursor-pointer hover:from-indigo-600 hover:to-indigo-700"
+            >
+              <span className="relative z-10">Inicio</span>
+              <div className="absolute inset-0 -translate-x-full transform bg-gradient-to-r from-indigo-600 to-indigo-700 transition-transform duration-200 group-hover:translate-x-0"></div>
+            </button>
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 
